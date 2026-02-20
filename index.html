@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz de Conhecimentos Gerais</title>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg,#ff7b00,#ffae00);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        margin:0;
+        color:white;
+    }
+
+    .quiz-container{
+        background:#ffffff15;
+        backdrop-filter: blur(10px);
+        padding:30px;
+        border-radius:15px;
+        width:400px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    h2{
+        margin-bottom:20px;
+    }
+
+    .option{
+        display:block;
+        background:#ffffff20;
+        margin:10px 0;
+        padding:10px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:0.3s;
+    }
+
+    .option:hover{
+        background:#ffb347;
+    }
+
+    button{
+        margin-top:15px;
+        padding:10px;
+        width:100%;
+        border:none;
+        border-radius:8px;
+        background:#ff7b00;
+        color:white;
+        font-weight:bold;
+        cursor:pointer;
+    }
+
+    button:hover{
+        background:#ff9500;
+    }
+
+    .progress{
+        height:8px;
+        background:#ffffff30;
+        border-radius:5px;
+        margin-bottom:15px;
+        overflow:hidden;
+    }
+
+    .progress-bar{
+        height:100%;
+        width:0%;
+        background:#ff9500;
+        transition:0.3s;
+    }
+
+    .resultado{
+        text-align:center;
+        font-size:18px;
+    }
+</style>
+</head>
+<body>
+    <div>QUIZ PATIO</div>
+<div class="quiz-container">
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <h2 id="pergunta">Pergunta</h2>
+    <div id="opcoes"></div>
+    <button onclick="proximaPergunta()">Próxima</button>
+</div>
+
+<script>
+
+const perguntas = [
+{
+    pergunta: "Qual é a capital do Brasil?",
+    opcoes: ["São Paulo","Rio de Janeiro","Brasília","Salvador"],
+    correta: 2
+},
+{
+    pergunta: "Quanto é 8 x 7?",
+    opcoes: ["54","56","64","48"],
+    correta: 1
+},
+{
+    pergunta: "Quem criou o JavaScript?",
+    opcoes: ["Bill Gates","Brendan Eich","Elon Musk","Steve Jobs"],
+    correta: 1
+},
+{
+    pergunta: "Qual planeta é conhecido como Planeta Vermelho?",
+    opcoes: ["Marte","Vênus","Saturno","Júpiter"],
+    correta: 0
+},
+{
+    pergunta: "Em que ano o Brasil foi descoberto?",
+    opcoes: ["1498","1500","1822","1889"],
+    correta: 1
+}
+]
+
+let indice = 0
+let pontuacao = 0
+let respostaSelecionada = null
+
+function carregarPergunta(){
+    const perguntaAtual = perguntas[indice]
+    document.getElementById("pergunta").innerText = perguntaAtual.pergunta
+    const opcoesDiv = document.getElementById("opcoes")
+    opcoesDiv.innerHTML = ""
+
+    perguntaAtual.opcoes.forEach((opcao, i)=>{
+        const div = document.createElement("div")
+        div.classList.add("option")
+        div.innerText = opcao
+        div.onclick = () => selecionarOpcao(i, div)
+        opcoesDiv.appendChild(div)
+    })
+
+    atualizarProgresso()
+}
+
+function selecionarOpcao(i, elemento){
+    respostaSelecionada = i
+    document.querySelectorAll(".option").forEach(op=>{
+        op.style.background = "#ffffff20"
+    })
+    elemento.style.background = "#00ff88"
+}
+
+function proximaPergunta(){
+    if(respostaSelecionada === null){
+        alert("Selecione uma resposta!")
+        return
+    }
+
+    if(respostaSelecionada === perguntas[indice].correta){
+        pontuacao++
+    }
+
+    indice++
+    respostaSelecionada = null
+
+    if(indice < perguntas.length){
+        carregarPergunta()
+    }else{
+        mostrarResultado()
+    }
+}
+
+function atualizarProgresso(){
+    const progresso = ((indice) / perguntas.length) * 100
+    document.getElementById("progressBar").style.width = progresso + "%"
+}
+
+function mostrarResultado(){
+    document.querySelector(".quiz-container").innerHTML = `
+        <div class="resultado">
+            <h2>Quiz Finalizado!</h2>
+            <p>Sua pontuação: ${pontuacao} / ${perguntas.length}</p>
+            <button onclick="location.reload()">Refazer Quiz</button>
+        </div>
+    `
+}
+
+carregarPergunta()
+
+</script>
+
+</body>
+</html>
